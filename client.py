@@ -1,9 +1,13 @@
 import socket
 import time
+import os
 # host = socket.gethostname()
 # port = 5000
 host = '163.17.9.117'  # 對server端為主機位置
-port = 5555
+port = 48763
+
+workpath=str(os.getcwd())
+
 address = (host, port)
 img_name=""
 def send_filename():   
@@ -21,9 +25,7 @@ def send_filename():
         break
     socket02.close()  # 關閉
     print('client close')
-    time.sleep(0.1)
     send_img()
-
 def send_img():
     socket02 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # AF_INET:默認IPv4, SOCK_STREAM:TCP    
@@ -31,7 +33,7 @@ def send_img():
     ##################################
     # 開始傳輸
     print('start send image')
-    imgFile = open("P_20190314_105629_90.jpg", "rb")
+    imgFile = open(workpath+"\P_20190314_105629_90.jpg", "rb")
     while True:
         imgData = imgFile.readline(5120)
         if not imgData:
@@ -46,8 +48,21 @@ def send_img():
     ##################################
     socket02.close()  # 關閉
     print('client close')
+    time.sleep(5)
+    
 
-
+def get_json():
+    socket02 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # AF_INET:默認IPv4, SOCK_STREAM:TCP    
+    socket02.connect(address)
+    while True:
+        keys = "P_20190314_105629_90.jpg"
+        socket02.sendall(bytes(keys,encoding="utf8"))#取得文字送出文字
+        prdata = str(socket02.recv(1024),encoding="utf8")
+        print(prdata)
+        break
+    socket02.close()
+    return print('suc')
 
 if __name__ == "__main__":
     send_filename()
